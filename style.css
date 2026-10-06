@@ -13,20 +13,21 @@ button{font:inherit;cursor:pointer;border:0}
 
 /* ---------- start ---------- */
 #screen-start{background:
-  radial-gradient(120% 70% at 50% 0%,#24407a 0%,var(--navy) 60%),var(--navy);overflow:hidden}
-.start-inner{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:calc(env(safe-area-inset-top) + 24px) 24px calc(env(safe-area-inset-bottom) + 24px);text-align:center;gap:14px}
+  linear-gradient(180deg,rgba(14,26,51,0) 22%,rgba(14,26,51,.55) 42%,rgba(14,26,51,.72) 70%,rgba(14,26,51,.88) 100%),
+  url(start_bg.webp) center top/cover no-repeat,var(--navy);overflow:hidden}
+.start-inner{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  padding:calc(env(safe-area-inset-top) + 24px) 24px calc(env(safe-area-inset-bottom) + 28px);text-align:center;gap:12px}
 .eyebrow{font-family:var(--serif);letter-spacing:.35em;font-size:12px;color:var(--gold)}
 .logo{font-family:var(--serif);font-weight:700;line-height:1;color:var(--gold2);
-  text-shadow:0 0 18px rgba(243,223,162,.35)}
+  text-shadow:0 2px 14px rgba(0,0,0,.6),0 0 18px rgba(243,223,162,.35)}
 .logo span{display:block}
 .logo .l1{font-size:22px;letter-spacing:.42em;margin-left:.42em}
 .logo .l2{font-size:30px;letter-spacing:.06em;margin-top:6px}
 .logo .l3{font-family:var(--round);font-size:20px;letter-spacing:.12em;margin-top:12px;color:var(--cream)}
 .logo em{font-family:var(--serif);font-style:italic;color:var(--gold)}
-.start-chars{position:relative;width:240px;height:200px;margin:4px 0}
-.sc-fairy{position:absolute;width:104px;left:8px;top:0;animation:float 3.2s ease-in-out infinite}
-.sc-reindeer{position:absolute;height:170px;right:6px;bottom:0;animation:hop 2.4s ease-in-out infinite;transform-origin:50% 100%}
+.start-chars{position:relative;width:220px;height:min(170px,20vh);margin:2px 0}
+.sc-fairy{position:absolute;width:min(92px,11vh);left:-28px;top:0;animation:float 3.2s ease-in-out infinite}
+.sc-reindeer{position:absolute;height:100%;right:6px;bottom:0;animation:hop 2.4s ease-in-out infinite;transform-origin:50% 100%}
 .lead{font-size:15px;line-height:1.8}
 .note{font-size:11px;line-height:1.7;opacity:.72}
 .note.small{font-size:11px}

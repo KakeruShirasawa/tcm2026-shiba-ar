@@ -32,19 +32,28 @@ window.TCM_CONFIG = {
 
   // 文言（Geminiで最終化した文章をここに差し替え）
   COPY: {
-    hintSearch: '東京タワーの方へスマホを向けてね',
-    hintTurnLeft: 'もう少し左かな…',
-    hintTurnRight: 'もう少し右かな…',
-    hintUp: 'タワーのてっぺんを見上げて！',
-    hintDown: 'ちょっと下げてみて',
-    hintAlmost: 'みつかりそう…！',
-    hintFound: 'みつけた！ 一緒に写真を撮ろう',
-    hintFar: '芝公園の会場で東京タワーをさがしてね',
-    hintNoSensor: 'センサーが使えないため、画面のタワーの色で判定します',
-    toastFound: '✨ 森の仲間たちがあらわれた！',
-    sendOk: 'LINEのトークに写真を送りました！',
-    sendNeedFriend: '公式アカウントを友だち追加すると写真が届きます',
-    sendNeedConsent: '送信するにはチェックを入れてください',
-    shareFallback: '画像を長押しして保存してね'
+    // ---- 文章：Gemini作成（2026/10/06）→ Claudeで文字数・仕様に合わせ微調整 ----
+    startLead: '東京タワーをカメラにかざすと、<br>冬の特別な仲間たちに会えるかも。',
+    startButton: 'まほうのカメラを開く',
+    startNote: 'カメラ・位置情報・センサーの利用を許可してください。<br>位置情報はタワーの方角を探すためだけに使用します。',
+    hintSearch: '東京タワーをカメラでのぞいてみてください',
+    hintTurnLeft: 'もう少し左をのぞいてみて',
+    hintTurnRight: 'もう少し右をのぞいてみて',
+    hintUp: 'もっと上を見上げてみて',
+    hintDown: 'もう少しカメラを下げてみて',
+    hintAlmost: 'あと少し……見つかりそうです！',
+    hintFound: '見つけた！冬の仲間と一緒に写真を撮ろう',
+    hintFar: '会場の芝公園で東京タワーを映してみてね',
+    hintNoSensor: '画面の色を頼りに仲間たちを探してみてね',
+    toastFound: 'あらわれました！好きな角度で撮影できます',
+    resultSaveNote: '画像を長押しするとスマートフォンに保存できます',
+    consentLabel: '写真のLINEトークへの送信と、主催者による一定期間の保管に同意します',
+    sendButton: 'LINEに送る',
+    shareButton: 'シェア・保存する',
+    retakeButton: 'もう一度撮る',
+    sendOk: 'LINEに写真を届けました！',
+    sendNeedFriend: '公式アカウントを友だち追加して写真を受け取ろう',
+    sendNeedConsent: '同意にチェックを入れて進んでね',
+    shareFallback: '画像を長押しして「写真に追加」を選んでね'
   }
 };
