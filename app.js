@@ -26,7 +26,7 @@
     color: 0, prog: 0, found: false,
     anchor: null,            // 発見時の heading/elev
     view: { x: 0, y: 0 },    // 平滑化した視点オフセット(px)
-    pose: 0,
+    pose: 0, facing: 'environment',
     t0: performance.now(),
     lastPhoto: null, lastPhotoUrl: null
   };
@@ -37,6 +37,11 @@
                 bx: 0.32, by: 0.40, hRatio: 0.16, drag: { x: 0, y: 0 }, scale: 1, x: 0, y: 0, w: 0, h: 0, rot: 0, flip: 1, alpha: 0, born: 0 },
     reindeer: { el: $('#ch-reindeer'), imgs: ['reindeer_front.webp', 'reindeer_side.webp'],
                 bx: 0.64, by: 0.83, hRatio: 0.27, drag: { x: 0, y: 0 }, scale: 1, x: 0, y: 0, w: 0, h: 0, rot: 0, flip: 1, alpha: 0, born: 0, sy: 1 }
+  };
+  // 配置（画面比率）：自撮り時は顔を中央に空け、キャラを左右に寄せる
+  const LAYOUT = {
+    normal: { fairy: { bx: 0.32, by: 0.40, h: 0.16 }, reindeer: { bx: 0.64, by: 0.83, h: 0.27 } },
+    selfie: { fairy: { bx: 0.20, by: 0.36, h: 0.13 }, reindeer: { bx: 0.75, by: 0.86, h: 0.21 } }
   };
   const imgCache = {};
   const loadImg = (src) => imgCache[src] || (imgCache[src] = new Promise((res, rej) => {
@@ -143,12 +148,21 @@
 
   // ---------- camera ----------
   const video = $('#cam');
-  async function startCamera() {
-    const constraints = { audio: false, video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } } };
+  async function startCamera(facing = S.facing) {
+    if (S.stream) S.stream.getTracks().forEach(t => t.stop());
+    const constraints = { audio: false, video: { facingMode: { ideal: facing }, width: { ideal: 1920 }, height: { ideal: 1080 } } };
     S.stream = await navigator.mediaDevices.getUserMedia(constraints);
+    // 実際に使われたカメラの向き（端末によっては指定どおりにならない）
+    const set = S.stream.getVideoTracks()[0].getSettings ? S.stream.getVideoTracks()[0].getSettings() : {};
+    S.facing = set.facingMode || facing;
     video.srcObject = S.stream;
+    video.classList.toggle('mirror', S.facing === 'user');
     await video.play().catch(() => {});
   }
+  // インカメラ時はカメラが逆向き：方位+180°、仰角は反転
+  const selfie = () => S.facing === 'user';
+  function camHeading() { return S.heading == null ? null : selfie() ? (S.heading + 180) % 360 : S.heading; }
+  function camElev() { return S.elev == null ? null : selfie() ? -S.elev : S.elev; }
 
   // 画像（色）による補助判定：画面上部中央の「タワーらしい暖色」の割合
   const sampleCv = document.createElement('canvas'); sampleCv.width = 48; sampleCv.height = 64;
@@ -179,10 +193,11 @@
   function detect(dt) {
     const g = towerGeometry();
     let score, oriScore = 0, dh = 0, dv = 0;
-    if (S.hasOrientation && S.heading != null) {
-      dh = angDiff(g.bearing, S.heading);                  // +:右に回す
+    const H = camHeading(), E = camElev();
+    if (S.hasOrientation && H != null) {
+      dh = angDiff(g.bearing, H);                  // +:右に回す
       const lo = -C.DETECT.elevMargin * 0.5, hi = g.elevTop + C.DETECT.elevMargin;
-      dv = S.elev < lo ? (g.elevMid - S.elev) : S.elev > hi ? (g.elevMid - S.elev) : 0; // +:上げる
+      dv = E < lo ? (g.elevMid - E) : E > hi ? (g.elevMid - E) : 0; // +:上げる
       const tol = C.DETECT.headingTolerance, hs = clamp((tol - Math.abs(dh)) / (tol * 0.5), 0, 1);
       const vs = dv === 0 ? 1 : clamp(1 - Math.abs(dv) / 20, 0, 1);
       oriScore = hs * vs;
@@ -198,7 +213,7 @@
     // HUD
     ringProg.style.strokeDashoffset = RING_LEN * (1 - S.prog);
     if (S.hasOrientation) {
-      const rot = Math.atan2(clamp(dh, -60, 60), clamp(dv, -60, 60) || 0.0001) * R2D;
+      const rot = Math.atan2(clamp(selfie() ? -dh : dh, -60, 60), clamp(dv, -60, 60) || 0.0001) * R2D;
       const onTarget = Math.abs(dh) < C.DETECT.headingTolerance * 0.5 && dv === 0;
       arrowEl.classList.toggle('target', onTarget);
       arrowEl.style.transform = onTarget ? '' : `rotate(${rot}deg)`;
@@ -228,7 +243,7 @@
   function onFound(g) {
     if (S.found) return;
     S.found = true;
-    S.anchor = { heading: S.heading, elev: S.elev };
+    S.anchor = { heading: camHeading(), elev: camElev(), facing: S.facing };
     S.view = { x: 0, y: 0 };
     const now = performance.now();
     chars.fairy.born = now; chars.reindeer.born = now + 450;
@@ -264,15 +279,19 @@
     const vw = innerWidth, vh = innerHeight;
     // 疑似ワールド固定：発見時の向きからのズレだけキャラをずらす
     if (S.found && S.anchor && S.anchor.heading != null && S.heading != null) {
-      const pxPerDeg = vw / 55;
-      const tx = clamp(-angDiff(S.heading, S.anchor.heading) * pxPerDeg, -vw * 0.7, vw * 0.7);
-      const ty = clamp((S.elev - S.anchor.elev) * pxPerDeg, -vh * 0.5, vh * 0.5);
+      const pxPerDeg = vw / 55, sgn = selfie() ? 1 : -1; // インカメラは鏡像表示なので左右の動きが逆
+      const tx = clamp(sgn * angDiff(camHeading(), S.anchor.heading) * pxPerDeg, -vw * 0.7, vw * 0.7);
+      const ty = clamp((camElev() - S.anchor.elev) * pxPerDeg, -vh * 0.5, vh * 0.5);
       S.view.x = lerp(S.view.x, tx, 0.2); S.view.y = lerp(S.view.y, ty, 0.2);
     }
     const t = now / 1000;
 
     // 妖精：空をふわふわ飛ぶ（8の字＋上下）
+    const L = selfie() ? LAYOUT.selfie : LAYOUT.normal;
     const f = chars.fairy;
+    f.bx = lerp(f.bx, L.fairy.bx, 0.08); f.by = lerp(f.by, L.fairy.by, 0.08); f.hRatio = lerp(f.hRatio, L.fairy.h, 0.08);
+    const r0 = chars.reindeer;
+    r0.bx = lerp(r0.bx, L.reindeer.bx, 0.08); r0.by = lerp(r0.by, L.reindeer.by, 0.08); r0.hRatio = lerp(r0.hRatio, L.reindeer.h, 0.08);
     f.h = vh * f.hRatio * f.scale; f.w = f.h * 0.96;
     {
       const k = clamp((now - f.born) / 1400, 0, 1), e = easeOutBack(k);
@@ -452,7 +471,9 @@
       let sw, sh, sx, sy;
       if (ar > tar) { sh = video.videoHeight; sw = sh * tar; sx = (video.videoWidth - sw) / 2; sy = 0; }
       else { sw = video.videoWidth; sh = sw / tar; sx = 0; sy = (video.videoHeight - sh) / 2; }
+      if (selfie()) { ctx.save(); ctx.translate(W, 0); ctx.scale(-1, 1); }
       ctx.drawImage(video, sx, sy, sw, sh, 0, 0, W, H);
+      if (selfie()) ctx.restore();
     } else { ctx.fillStyle = '#223'; ctx.fillRect(0, 0, W, H); }
     // キャラクター
     for (const c of [chars.reindeer, chars.fairy]) {
@@ -501,6 +522,18 @@
   $('#btn-start').addEventListener('click', start);
   $('#btn-force').addEventListener('click', () => { S.prog = 1; onFound(towerGeometry()); });
   $('#btn-reset').addEventListener('click', resetSearch);
+  $('#btn-flip').addEventListener('click', async () => {
+    const btn = $('#btn-flip'); btn.disabled = true;
+    const next = S.facing === 'user' ? 'environment' : 'user';
+    try {
+      await startCamera(next);
+      if (S.found && S.anchor) S.anchor = { heading: camHeading(), elev: camElev(), facing: S.facing }; // 向きの基準を取り直す
+      S.view = { x: 0, y: 0 };
+      toast(S.facing === 'user' ? T('toastSelfie') : T('toastBack'), 1800);
+      log('flip', { facing: S.facing });
+    } catch (e) { toast('カメラを切り替えられませんでした'); try { await startCamera(S.facing); } catch (_) {} }
+    finally { btn.disabled = false; }
+  });
   $('#btn-swap').addEventListener('click', () => {
     S.pose = 1 - S.pose;
     Object.values(chars).forEach(c => { c.el.src = c.imgs[S.pose]; });

@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=2">
+<link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
 <div id="app">
@@ -56,9 +56,15 @@
     </div>
 
     <div id="controls">
-      <button id="btn-swap" class="btn-round" title="ポーズ切替" aria-label="ポーズ切替">↺</button>
+      <div class="ctl-side">
+        <button id="btn-reset" class="btn-round small" title="もう一度さがす" aria-label="もう一度さがす">⌖</button>
+        <button id="btn-swap" class="btn-round" title="ポーズ切替" aria-label="ポーズ切替">↺</button>
+      </div>
       <button id="btn-shutter" class="shutter" aria-label="撮影" disabled></button>
-      <button id="btn-reset" class="btn-round" title="もう一度さがす" aria-label="もう一度さがす">⌖</button>
+      <div class="ctl-side">
+        <span class="ctl-gap"></span>
+        <button id="btn-flip" class="btn-round" title="インカメラ切替" aria-label="インカメラ切替"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><path d="M9.5 13.5a2.5 2.5 0 0 1 4.6-1.4M14.5 13.5a2.5 2.5 0 0 1-4.6 1.4"/><path d="M14.4 10.6v1.6h-1.6M9.6 16.4v-1.6h1.6"/></svg></button>
+      </div>
     </div>
     <div id="debug" hidden></div>
   </section>
@@ -84,7 +90,7 @@
 </div>
 
 <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-<script src="config.js?v=2"></script>
-<script src="app.js?v=2"></script>
+<script src="config.js?v=3"></script>
+<script src="app.js?v=3"></script>
 </body>
 </html>

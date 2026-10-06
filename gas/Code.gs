@@ -86,7 +86,7 @@ function json_(o) {
 }
 
 /* ---------------- 1. ログ ---------------- */
-const ALLOWED_EVENTS = ['open', 'start', 'found', 'capture', 'share_tap', 'share_done', 'camera_error', 'send'];
+const ALLOWED_EVENTS = ['open', 'start', 'found', 'capture', 'share_tap', 'share_done', 'camera_error', 'send', 'flip'];
 function handleLog_(b) {
   if (ALLOWED_EVENTS.indexOf(b.event) < 0) return { ok: false, error: 'bad_event' };
   const detail = {};

@@ -50,6 +50,11 @@ button{font:inherit;cursor:pointer;border:0}
 /* ---------- AR ---------- */
 #screen-ar{background:#000}
 #cam{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#cam.mirror{transform:scaleX(-1)}
+.ctl-side{display:flex;flex-direction:column;align-items:center;gap:10px}
+.ctl-gap{height:38px}
+.btn-round.small{width:38px;height:38px;font-size:17px}
+.btn-round svg{display:block;margin:auto}
 #stage{position:absolute;inset:0;overflow:hidden}
 .char{position:absolute;left:0;top:0;opacity:0;pointer-events:none;will-change:transform,opacity;touch-action:none;user-select:none;-webkit-user-drag:none}
 .char.on{opacity:1;pointer-events:auto}
@@ -73,7 +78,7 @@ button{font:inherit;cursor:pointer;border:0}
 @keyframes pulse{50%{transform:scale(1.15)}}
 #hint{background:rgba(14,26,51,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);padding:8px 16px;border-radius:999px;font-size:13px;border:1px solid rgba(243,223,162,.35)}
 
-#controls{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 18px);display:flex;justify-content:space-evenly;align-items:center;z-index:5}
+#controls{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 18px);display:flex;justify-content:space-evenly;align-items:flex-end;z-index:5}
 .shutter{width:76px;height:76px;border-radius:50%;background:#fff;border:5px solid var(--gold);box-shadow:0 0 0 4px rgba(255,255,255,.35),0 6px 20px #0008;transition:transform .1s,opacity .3s}
 .shutter:disabled{opacity:.35}
 .shutter:active{transform:scale(.92)}

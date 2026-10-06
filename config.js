@@ -54,6 +54,8 @@ window.TCM_CONFIG = {
     sendOk: 'LINEに写真を届けました！',
     sendNeedFriend: '公式アカウントを友だち追加して写真を受け取ろう',
     sendNeedConsent: '同意にチェックを入れて進んでね',
-    shareFallback: '画像を長押しして「写真に追加」を選んでね'
+    shareFallback: '画像を長押しして「写真に追加」を選んでね',
+    toastSelfie: '自撮りモード：仲間たちと一緒に写ろう',
+    toastBack: '通常カメラにもどりました'
   }
 };
