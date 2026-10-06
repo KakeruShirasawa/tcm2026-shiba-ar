@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0E1A33">
+<meta name="robots" content="noindex">
+<title>TOKYO CHRISTMAS MARKET 2026 in 芝公園｜ARフォトフレーム</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+<div id="app">
+
+  <!-- ===== START ===== -->
+  <section id="screen-start" class="screen active">
+    <div class="snow" aria-hidden="true"></div>
+    <div class="start-inner">
+      <p class="eyebrow">AR PHOTO FRAME</p>
+      <h1 class="logo">
+        <span class="l1">TOKYO</span>
+        <span class="l2">CHRISTMAS MARKET</span>
+        <span class="l3">2026 <em>in</em> 芝公園</span>
+      </h1>
+      <div class="start-chars" aria-hidden="true">
+        <img src="fairy_front.webp" class="sc-fairy" alt="">
+        <img src="reindeer_front.webp" class="sc-reindeer" alt="">
+      </div>
+      <p class="lead" data-copy="startLead">東京タワーにスマホをかざすと、<br>森の仲間たちが会いにきてくれるよ。</p>
+      <button id="btn-start" class="btn-gold" data-copy="startButton">東京タワーをさがす</button>
+      <p class="note" data-copy="startNote">カメラ・位置情報・センサーの利用を許可してください。<br>位置情報は東京タワーの方角判定にのみ使用します。</p>
+    </div>
+  </section>
+
+  <!-- ===== AR ===== -->
+  <section id="screen-ar" class="screen">
+    <video id="cam" playsinline muted autoplay></video>
+    <div id="stage">
+      <img id="ch-fairy" class="char fairy" src="fairy_front.webp" alt="妖精">
+      <img id="ch-reindeer" class="char reindeer" src="reindeer_front.webp" alt="トナカイ">
+      <div id="burst" aria-hidden="true"></div>
+    </div>
+    <canvas id="frame" aria-hidden="true"></canvas>
+
+    <!-- finder HUD -->
+    <div id="hud">
+      <div id="finder">
+        <div class="ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="track"/><circle id="ring-prog" cx="50" cy="50" r="44" class="prog"/></svg>
+          <div id="arrow"><svg viewBox="0 0 40 40"><path d="M20 6 L33 24 H24 V34 H16 V24 H7 Z" fill="currentColor"/></svg><span class="tw">🗼</span></div>
+        </div>
+        <p id="hint" data-copy="hintSearch">東京タワーの方へスマホを向けてね</p>
+      </div>
+      <button id="btn-force" class="btn-ghost small" hidden>テスト：出現させる</button>
+    </div>
+
+    <div id="controls">
+      <button id="btn-swap" class="btn-round" title="ポーズ切替" aria-label="ポーズ切替">↺</button>
+      <button id="btn-shutter" class="shutter" aria-label="撮影" disabled></button>
+      <button id="btn-reset" class="btn-round" title="もう一度さがす" aria-label="もう一度さがす">⌖</button>
+    </div>
+    <div id="debug" hidden></div>
+  </section>
+
+  <!-- ===== RESULT ===== -->
+  <section id="screen-result" class="screen">
+    <div class="result-inner">
+      <p class="eyebrow">YOUR PHOTO</p>
+      <img id="result-img" alt="撮影した写真">
+      <p class="note small" data-copy="resultSaveNote">画像を長押しで保存できます</p>
+      <label class="consent"><input type="checkbox" id="chk-consent"> <span data-copy="consentLabel">写真をLINEのトークに届けてもらう（主催者が写真を保管します）</span></label>
+      <div class="result-btns">
+        <button id="btn-send" class="btn-gold" data-copy="sendButton">LINEに送る</button>
+        <button id="btn-share" class="btn-ghost" data-copy="shareButton">シェア・保存</button>
+        <button id="btn-retake" class="btn-ghost" data-copy="retakeButton">もう一度撮る</button>
+      </div>
+      <p id="result-msg" class="note"></p>
+    </div>
+  </section>
+
+  <div id="toast" role="status"></div>
+  <div id="rotate">縦向きでお楽しみください</div>
+</div>
+
+<script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script src="config.js?v=1"></script>
+<script src="app.js?v=1"></script>
+</body>
+</html>
